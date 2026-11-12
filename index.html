@@ -138,6 +138,16 @@ footer .btn{margin:16px 0 8px}
 .btn-navy{background:#0f2a5e;color:#fff;width:100%}
 .btn-navy:hover{background:#0b1f47;transform:translateY(-2px)}
 @media(min-width:720px){.plans{grid-template-columns:1fr 1fr;align-items:start}}
+
+/* ===== offre limitée : ancien prix + compte à rebours ===== */
+.plan .old{font-size:20px;color:#8a94a8;text-decoration:line-through;text-decoration-thickness:2px;font-weight:700;margin:0 0 2px}
+.plan .save{display:inline-block;background:#fde8e9;color:var(--red2);border-radius:999px;padding:2px 14px;font-size:14px;font-weight:800;margin:8px 0 0}
+.plan .cd{display:flex;gap:8px;direction:ltr;margin:16px 0 4px}
+.plan .cd div{flex:1;background:#eff3fa;border:1px solid #dde5f2;border-radius:12px;text-align:center;padding:6px 0}
+.plan .cd b{display:block;font-size:22px;color:#0f2a5e;font-variant-numeric:tabular-nums;line-height:1.4}
+.plan .cd span{font-size:12px;color:var(--mut);font-weight:700}
+.plan .cdlbl{font-size:14px;margin:0 0 16px}
+.plan .cdend{display:none;margin:14px 0 16px}
 </style>
 </head>
 <body>
@@ -255,8 +265,19 @@ footer .btn{margin:16px 0 8px}
       <article class="plan rv">
         <span class="num">1</span>
         <h3>دورة عادية</h3>
-        <div class="amt">150 <small>درهم / الشهر</small></div>
+        <div class="old">400 درهم / الشهر</div>
+        <div class="amt">199 <small>درهم / الشهر</small></div>
+        <span class="save">تخفيض 50%</span>
         <p>لمدة 12 شهراً فقط</p>
+        <div class="cd" id="offerCd" role="timer" aria-label="الوقت المتبقي للعرض">
+          <div><b data-u="d">00</b><span>يوم</span></div>
+          <div><b data-u="h">00</b><span>ساعة</span></div>
+          <div><b data-u="m">00</b><span>دقيقة</span></div>
+          <div><b data-u="s">00</b><span>ثانية</span></div>
+        </div>
+        <p class="cdlbl" id="offerLbl">العرض كينتهي فهاد الوقت</p>
+        <p class="cdend" id="offerEnd">العرض سالا. تواصل معنا باش نعطيوك آخر الأثمنة.</p>
+        <a class="btn btn-red" href="#booking" style="width:100%">احجز حصتيك المجانيتين</a>
       </article>
       <article class="plan feat rv">
         <span class="tag">الأكثر طلباً</span>
@@ -429,6 +450,22 @@ form.addEventListener("submit",e=>{
     if(document.visibilityState === "visible") fb.style.display = "block";
   }, 2500);
 });
+</script>
+<script>
+/* نهاية العرض: بدل التاريخ هنا (سنة-شهر-يوم) */
+(function(){
+  var END=new Date("2026-11-14T23:59:59"),box=document.getElementById("offerCd");
+  if(!box)return;
+  function pad(n){return String(n).padStart(2,"0")}
+  function tick(){
+    var s=Math.floor((END-new Date())/1000);
+    if(s<=0){box.style.display="none";document.getElementById("offerLbl").style.display="none";
+      document.getElementById("offerEnd").style.display="block";clearInterval(t);return}
+    var v={d:Math.floor(s/86400),h:Math.floor(s%86400/3600),m:Math.floor(s%3600/60),s:s%60};
+    for(var k in v){box.querySelector('[data-u="'+k+'"]').textContent=pad(v[k])}
+  }
+  var t=setInterval(tick,1000);tick();
+})();
 </script>
 </body>
 </html>
